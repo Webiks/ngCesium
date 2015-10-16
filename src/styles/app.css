@@ -1,4 +1,7 @@
 /* app css stylesheet */
+html, body{
+  height: 100%;
+}
 
 #main, body, .mapWrapper{
   max-height: 100%;
