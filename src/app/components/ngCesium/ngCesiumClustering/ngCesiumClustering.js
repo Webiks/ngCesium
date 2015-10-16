@@ -59,10 +59,12 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                 clusterGroup: function clusterGroup(groupData) {
                     var that = this;
 
-                    var radiusInPixels = that.getRadius(groupData);
-                    var entities = groupData.dataSource.entities.values;
+                    var entities = groupData.members; // get the entities of the group
+
                     for (var i = 0; i < entities.length; i++){
+                        // for every entity, try to add into a cluster.
                         if (!that.addToCluster(entities[i], groupData)){
+                            //If does not belong to any cluster, create a new one from the entity
                             that.createCluster(entities[i], groupData);
                         }
                     }
@@ -75,12 +77,15 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                  */
                 addToCluster: function addToCluster(entity, groupData){
                     var that = this;
+                    var clusters = groupData.clusters;
                     // for each cluster
-                    for (var i = 0; i < groupData.clusters.length; i++) {
-                        // check if the entity is in it
+                    for (var i = 0; i < clusters.length; i++) {
+                        // check if the entity is in the radius of the cluster
+                        // TODO::add a time constraint - add to cluster only if it is shown/fits the time filter
                         if (that.isInRadius(that.getRadius(groupData), clusters[i].centerEntity, entity)) {
                             // add it to the polygon array
                             that.addPointToPolygoneArr(clusters[i].clusterArr, entity);
+                            // add to the cluster's entities' list
                             clusters[i].entities.push(entity);
 
                             // set the entities to show false
@@ -114,6 +119,9 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                  */
                 isInRadius: function isInRadius(radius, entity, centerEntity){
                     // get the distance between the entity and the center entity
+                    if (angular.isUndefined(entity.position)){
+                        return false;
+                    }
                     var distance = Cesium.Cartesian3.distance(entity.position.getValue(Cesium.JulianDate.now()), centerEntity.position.getValue(Cesium.JulianDate.now()));
                     // see if it is less than the radius
                     return (distance < radius );

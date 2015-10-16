@@ -5,7 +5,8 @@ angular.module('myApp', [
     'ui.router',
     'myApp.view1',
     'myApp.view2',
-    'myApp.view3',
+    'myApp.filterByPolygon',
+    'myApp.clusteringView',
     'ngCesium',
     'ngCesiumPolygonDrawer',
     'ngMaterial'
@@ -36,4 +37,14 @@ angular.module('myApp', [
         )
 
 
-    }]);
+    }])
+    .run(function($rootScope, $window) {
+        Cesium.BingMapsApi.defaultKey = 'AroazdWsTmTcIx4ZE3SIicDXX00yEp9vuRZyn6pagjyjgS-VdRBfBNAVkvrucbqr';
+        $rootScope.$on('$stateChangeStart',
+            function (event, toState, toParams, fromState, fromParams) {
+                if (toState.external) {
+                    event.preventDefault();
+                    $window.open(toState.url, '_self');
+                }
+            });
+    });

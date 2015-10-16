@@ -87,224 +87,287 @@ describe('ngCesium Clustering module tests', function () {
 
     ngCesiumExtensionTest(options);
 
-    /*beforeEach(module('ngCesiumClustering'));
-
-     beforeEach(inject(function(_$compile_, _$rootScope_, _cesiumClusteringFactory_) {
-     $compile = _$compile_;
-     $rootScope = _$rootScope_;
-     cesiumClusteringFactory = _cesiumClusteringFactory_;
-     $rootScope.cesiumConfig = {
-     config: {
-     baseLayerPicker: false,
-     fullscreenButton: false,
-     homeButton: false,
-     sceneModePicker: false,
-     selectionIndicator: false,
-     timeline: false,
-     animation: false,
-     geocoder: false
-     }
-     };
-     element = $compile('<div cesium-directive="cesiumConfig" cesium-clustering></div>')($rootScope);
-     isoScope = element.scope().$$childHead;
-     cesiumClustering = isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumClustering;
-     }));*/
 
     describe('ngCesiumClustering directive tests', function () {
 
     });
 
     describe('ngCesiumClustering factory tests', function () {
+
         it('ngCesiumClustering should be in the cesium instance', function () {
             expect(options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumClustering).toBeDefined();
         });
 
-        describe('clusterGroup(config) tests', function () {
-            it('clusterGroup should start the clustering methods', function () {
-
-            });
-        });
-
-        describe('cluster() tests', function () {
-            it('cluster should call clusterGroup for all existing groups', function () {
-                options.extensionInstance.groups = [1, 2];
-                spyOn(options.extensionInstance, 'clusterGroup');
-                options.extensionInstance.cluster();
-                expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(1);
-                expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(2);
-            });
-        });
-
-        describe('refreshConfig(config) tests', function () {
-            var config = {
-                defaultRadius: 100,
-                dataSource: undefined,
-                groups: [
-                    // standart
-                    {
-                        name: 'group1',
-                        color: '#654EA0',
-                        property: {
-                            name: 'type',
-                            value: 'pizzeria'
-                        }
-                    },
-                    // group value as a function
-                    {
-                        name: 'group2',
-                        color: '#111AE9',
-                        property: {
-                            name: 'type',
-                            value: function (entity) {
-                                return entity.position.x > 10;
+        describe('General methods', function(){
+            describe('refreshConfig(config) tests', function () {
+                var config = {
+                    defaultRadius: 100,
+                    dataSource: undefined,
+                    groups: [
+                        // standart
+                        {
+                            name: 'group1',
+                            color: '#654EA0',
+                            property: {
+                                name: 'type',
+                                value: 'pizzeria'
+                            }
+                        },
+                        // group value as a function
+                        {
+                            name: 'group2',
+                            color: '#111AE9',
+                            property: {
+                                name: 'type',
+                                value: function (entity) {
+                                    return entity.position.x > 10;
+                                }
+                            }
+                        },
+                        // no color
+                        {
+                            name: 'group3',
+                            property: {
+                                name: 'type',
+                                value: 'group3'
                             }
                         }
-                    },
-                    // no color
-                    {
-                        name: 'group3',
-                        property: {
-                            name: 'type',
-                            value: 'group3'
+
+                    ]
+                };
+
+                it('should call setConfig(config)', function () {
+                    spyOn(options.extensionInstance, 'setConfig');
+                    options.extensionInstance.refreshConfig(config);
+                    expect(options.extensionInstance.setConfig).toHaveBeenCalledWith(config);
+                });
+
+                it('should call setGroups()', function () {
+                    spyOn(options.extensionInstance, 'setGroups');
+                    options.extensionInstance.refreshConfig(config);
+                    expect(options.extensionInstance.setGroups).toHaveBeenCalled();
+                });
+
+                it('should call cluster()', function () {
+                    spyOn(options.extensionInstance, 'cluster');
+                    options.extensionInstance.refreshConfig(config);
+                    expect(options.extensionInstance.cluster).toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('Clustering Methods', function(){
+            describe('cluster() tests', function () {
+                it('cluster should call clusterGroup for all existing groups', function () {
+                    options.extensionInstance.groups = [1, 2];
+                    spyOn(options.extensionInstance, 'clusterGroup');
+                    options.extensionInstance.cluster();
+                    expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(1);
+                    expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(2);
+                });
+            });
+
+            describe('clusterGroup(group) tests', function () {
+                var config, viewer;
+
+                beforeEach(function(){
+                    setData(viewer, config);
+                });
+
+                it('Should call addToCluster() 10 times and createCluster 0 times', function(){
+                    var clusterInstance = jasmine.createSpyObj(options.extensionInstance, ['addToCluster', 'createCluster']);
+                    spyOn(options.extensionInstance, 'addToCluster').and.callFake(function() {
+                        return true;
+                    });
+                    spyOn(options.extensionInstance, 'createCluster').and.callFake(function() {
+                        return true;
+                    });
+                    var group = options.extensionInstance.setGroups()[0];
+                    options.extensionInstance.divideIntoGroups();
+                    options.extensionInstance.clusterGroup(group);
+
+                    expect(options.extensionInstance.addToCluster.calls.count()).toEqual(10);
+                    expect(options.extensionInstance.createCluster.calls.count()).toEqual(0);
+                });
+
+                it('Should call addToCluster() 10 times and createCluster 9 times', function(){
+                    // mock the functions inside
+
+                    spyOn(options.extensionInstance, 'addToCluster').and.callFake(function() {
+                        if (angular.isUndefined(this.shouldReturnFalse)){
+                            this.shouldReturnFalse = true;
+                            return true;
                         }
-                    }
+                        return false;
 
-                ]
-            };
+                    });
+                    spyOn(options.extensionInstance, 'createCluster').and.callFake(function() {
+                        return true;
+                    });
+                    var group = options.extensionInstance.setGroups()[0];
+                    options.extensionInstance.divideIntoGroups();
+                    options.extensionInstance.clusterGroup(group);
 
-            it('should call setConfig(config)', function () {
-                spyOn(options.extensionInstance, 'setConfig');
-                options.extensionInstance.refreshConfig(config);
-                expect(options.extensionInstance.setConfig).toHaveBeenCalledWith(config);
+                    expect(options.extensionInstance.addToCluster.calls.count()).toEqual(10);
+                    expect(options.extensionInstance.createCluster.calls.count()).toEqual(9);
+                })
+
             });
 
-            it('should call setGroups()', function () {
-                spyOn(options.extensionInstance, 'setGroups');
-                options.extensionInstance.refreshConfig(config);
-                expect(options.extensionInstance.setGroups).toHaveBeenCalled();
+            describe('addToCluster(clusterArr, entity) tests', function () {
+                it('Should return false if entity does not belong to any cluster', function(){
+                    spyOn(options.extensionInstance, 'getRadius').and.callFake(function() {
+                        return 10;
+                    });
+
+                    spyOn(options.extensionInstance, 'isInRadius').and.callFake(function() {
+                        return false;
+                    });
+
+                    expect(options.extensionInstance.addToCluster({show: true}, {clusters: [{entities: [], centerEntity: {show: true}, clusterArr: []}]})).toBeFalsy();
+
+                });
+
+                it('Should return true if entity belongs to a cluster', function(){
+                    spyOn(options.extensionInstance, 'getRadius').and.callFake(function() {
+                        return 10;
+                    });
+
+                    spyOn(options.extensionInstance, 'isInRadius').and.callFake(function() {
+                        return true;
+                    });
+
+                    spyOn(options.extensionInstance, 'addPointToPolygoneArr').and.callFake(function() {
+                        return true;
+                    });
+
+                    expect(options.extensionInstance.addToCluster({show: true}, {clusters: [{entities: [], centerEntity: {show: true}, clusterArr: []}]})).toBeTruthy();
+
+                });
+
+                describe('addPointToPolygoneArr(point, arr) tests', function(){
+                    //TODO::fill this up
+                });
+
             });
 
-            it('should call cluster()', function () {
-                spyOn(options.extensionInstance, 'cluster');
-                options.extensionInstance.refreshConfig(config);
-                expect(options.extensionInstance.cluster).toHaveBeenCalled();
-            });
-        });
+            describe('isInRadius(radius, entity, centerEntity) tests', function () {
 
-        describe('divideIntoGroups() tests', function () {
-            var config, viewer;
+                var entity, centerEntity, distance;
+                var entities = new Cesium.EntityCollection();
+                entity = entities.add({
+                    position: new Cesium.Cartesian3.fromDegrees(0, 0)
+                });
+                centerEntity = entities.add({
+                    position: new Cesium.Cartesian3.fromDegrees(0, 15)
+                });
+                distance = Cesium.Cartesian3.distance(entity.position.getValue(Cesium.JulianDate.now()), centerEntity.position.getValue(Cesium.JulianDate.now()));
 
-            // set the data
-            beforeEach(function () {
-                setData(viewer, config);
-            });
+                it('should return false when not in radius', function () {
+                    var radius = distance - 1;
+                    expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeFalsy();
+                });
 
-            it('should call setInGroup(entity)', function () {
-                spyOn(options.extensionInstance, 'setInGroup');
-                options.extensionInstance.setGroups(); //set the groups
-                options.extensionInstance.divideIntoGroups(); // divide
-                expect(options.extensionInstance.setInGroup.calls.count()).toEqual(30);
-            });
-
-        });
-
-        describe('setGroups() tests', function () {
-
-            var config, viewer;
-
-            // set the data
-            beforeEach(function () {
-                setData(viewer, config);
+                it('should return true when in radius', function () {
+                    var radius = distance + 1;
+                    expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeTruthy();
+                });
             });
 
-            // clear data after an "it"
-            afterEach(function () {
-                options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
-                options.extensionInstance.groups.length = 0;
-            });
-
-            it('should return false if config does not exist', function () {
-                //TODO::when no config is sent or no group is defined, add all entities to one group
-                options.extensionInstance.config = undefined;
-                expect(options.extensionInstance.setGroups()).toBe(false);
-            });
-
-            it('should call createGroup()', function () {
-                spyOn(options.extensionInstance, 'createGroup');
-                options.extensionInstance.setGroups();
-                expect(options.extensionInstance.createGroup.calls.count()).toEqual(3);
-            });
-
-            it('should return the groups if success', function () {
-                var expectedOutcome = options.extensionInstance.setGroups();
-                expect(expectedOutcome.length).toBe(3);
-            });
-        });
-
-        describe('setInGroup(entity) tests', function () {
-            //TODO::fill this up
-            var config, viewer;
-
-            // set the data
-            beforeEach(function () {
-                setData(viewer, config);
-            });
-
-            afterEach(function () {
-                options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
-            });
-
-            it('Should return -1 when there are no groups', function () {
-                expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(-1);
-            });
-
-            it('Should return -1 when entity does not belong anywhere', function () {
-                options.extensionInstance.setGroups(); // set the groups
-                expect(options.extensionInstance.setInGroup({type: 'no group like this'})).toEqual(-1);
-            });
-
-            it('should return group index 0 when sent an entity with group of index 0', function () {
-                options.extensionInstance.setGroups(); // set the groups
-                expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(0);
-            });
-
-        });
-
-        describe('addPointToPolygoneArr(point, arr) tests', function(){
-           //TODO::fill this up
-        });
-
-        describe('createCluster(entity, groupData) tests', function(){
-            //TODO::fill this up
-        });
-
-        describe('isInRadius(radius, entity, centerEntity) tests', function () {
-
-            var entity, centerEntity, distance;
-            var entities = new Cesium.EntityCollection();
-            entity = entities.add({
-                position: new Cesium.Cartesian3.fromDegrees(0, 0)
-            });
-            centerEntity = entities.add({
-                position: new Cesium.Cartesian3.fromDegrees(0, 15)
-            });
-            distance = Cesium.Cartesian3.distance(entity.position.getValue(Cesium.JulianDate.now()), centerEntity.position.getValue(Cesium.JulianDate.now()));
-
-            it('should return false when not in radius', function () {
-                var radius = distance - 1;
-                expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeFalsy();
-            });
-
-            it('should return true when in radius', function () {
-                var radius = distance + 1;
-                expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeTruthy();
+            describe('createCluster(entity, groupData) tests', function(){
+                //TODO::fill this up
             });
         });
 
-        describe('clusterGroup(group) tests', function () {
-            //TODO::fill this up!
+        describe('Grouping methods', function(){
+            describe('setGroups() tests', function () {
 
+                var config, viewer;
+
+                // set the data
+                beforeEach(function () {
+                    setData(viewer, config);
+                });
+
+                // clear data after an "it"
+                afterEach(function () {
+                    options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
+                    options.extensionInstance.groups.length = 0;
+                });
+
+                it('should return false if config does not exist', function () {
+                    //TODO::when no config is sent or no group is defined, add all entities to one group
+                    options.extensionInstance.config = undefined;
+                    expect(options.extensionInstance.setGroups()).toBe(false);
+                });
+
+                it('should call createGroup()', function () {
+                    spyOn(options.extensionInstance, 'createGroup');
+                    options.extensionInstance.setGroups();
+                    expect(options.extensionInstance.createGroup.calls.count()).toEqual(3);
+                });
+
+                it('should return the groups if success', function () {
+                    var expectedOutcome = options.extensionInstance.setGroups();
+                    expect(expectedOutcome.length).toBe(3);
+                });
+            });
+
+            describe('divideIntoGroups() tests', function () {
+                var config, viewer;
+
+                // set the data
+                beforeEach(function () {
+                    setData(viewer, config);
+                });
+
+                it('should call setInGroup(entity)', function () {
+                    spyOn(options.extensionInstance, 'setInGroup');
+                    options.extensionInstance.setGroups(); //set the groups
+                    options.extensionInstance.divideIntoGroups(); // divide
+                    expect(options.extensionInstance.setInGroup.calls.count()).toEqual(30);
+                });
+
+            });
+
+            describe('setInGroup(entity) tests', function () {
+                //TODO::fill this up
+                var config, viewer;
+
+                // set the data
+                beforeEach(function () {
+                    setData(viewer, config);
+                });
+
+                afterEach(function () {
+                    options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
+                });
+
+                it('Should return -1 when there are no groups', function () {
+                    expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(-1);
+                });
+
+                it('Should return -1 when entity does not belong anywhere', function () {
+                    options.extensionInstance.setGroups(); // set the groups
+                    expect(options.extensionInstance.setInGroup({type: 'no group like this'})).toEqual(-1);
+                });
+
+                it('should return group index 0 when sent an entity with group of index 0', function () {
+                    options.extensionInstance.setGroups(); // set the groups
+                    expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(0);
+                });
+
+            });
         });
+
+
+
+
+
+
+
+
+
 
         it('setConfig(config) should alter the config', function () {
             var config = {
