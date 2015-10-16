@@ -99,6 +99,21 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                     }
                     return false;
                 },
+                /**
+                 * @name createCluster
+                 * @param entity
+                 * @param groupData
+                 * @description gets an entity and groupsData and pushes a new cluster with the entity as its center
+                 */
+                createCluster: function createCluster(entity, groupData) {
+                    // clusterArr, centerEntity (should be show = true when created), entities
+                    groupData.clusters.push({
+                        clusterArr: [],
+                        centerEntity: entity,
+                        entities: [entity]
+                    });
+                    this.addPointToPolygoneArr(groupData.clusters[groupData.clusters.length - 1].clusterArr, entity);
+                },
                 addPointToPolygoneArr: function addPointToPolygoneArr(arr, point) {
                     var cartographicPosition = this.cesiumInstance._viewer.scene.globe.ellipsoid.cartesianToCartographic(point.position.getValue(Cesium.JulianDate.now()));
                     var longitude = Cesium.Math.toDegrees(cartographicPosition.longitude);
@@ -128,21 +143,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                     // see if it is less than the radius
                     return (distance < radius );
                 },
-                /**
-                 * @name createCluster
-                 * @param entity
-                 * @param groupData
-                 * @description gets an entity and groupsData and pushes a new cluster with the entity as its center
-                 */
-                createCluster: function createCluster(entity, groupData) {
-                    // clusterArr, centerEntity (should be show = true when created), entities
-                    groupData.clusters.push({
-                        clusterArr: [],
-                        centerEntity: entity,
-                        entities: [entity]
-                    });
-                    this.addPointToPolygoneArr(groupData.clusters[groupData.clusters.length - 1].clusterArr, entity);
-                },
+
                 // TODO::test and comments
                 getRadius: function getRadius(groupData) {
                     if (groupData.radiusType === 'km') {
