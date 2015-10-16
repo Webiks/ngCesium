@@ -13,7 +13,7 @@ xdescribe('ngCesium module', function() {
     describe('ngCesiumAddRemoveButtons directive', function() {
         var element;
         beforeEach(inject(function() {
-            element = $compile('<div cesium-directive="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
+            element = $compile('<div cesium="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
         }));
 
         it('should instantiate add buttons to the view', function() {

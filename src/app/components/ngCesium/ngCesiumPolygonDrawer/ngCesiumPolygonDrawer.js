@@ -3,7 +3,7 @@ angular.module('ngCesiumPolygonDrawer', ['ngCesium'])
     .directive('cesiumPolygonDrawer', function(cesiumPolygonDrawerFactory){
         return {
             restrict: 'A',
-            require: 'cesiumDirective',
+            require: 'cesium',
             link: function(scope, element, attr, ctrl){
                 // create an isolate scope for this directive
                 var isoScope = scope.$new(true);

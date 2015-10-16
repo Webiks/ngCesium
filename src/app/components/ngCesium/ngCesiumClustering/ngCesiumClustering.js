@@ -19,7 +19,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
     .directive('cesiumClustering', ['cesiumClusteringFactory', function (cesiumClusteringFactory) {
         return {
             restrict: 'A',
-            require: 'cesiumDirective',
+            require: 'cesium',
             link: function (scope, element, attrs, ctrl) {
 
                 var options = scope.$eval(attrs.cesiumClustering);

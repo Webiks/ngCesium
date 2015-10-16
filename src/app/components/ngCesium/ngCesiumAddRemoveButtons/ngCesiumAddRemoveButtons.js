@@ -7,7 +7,7 @@ angular.module('ngCesiumAddRemoveButtons', ['ngCesium'])
         // return the directive definition object
         return {
             restrict: "EA",
-            require: "cesiumDirective",
+            require: "cesium",
             controller: function($scope){
 
             },

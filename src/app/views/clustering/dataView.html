@@ -1,0 +1,39 @@
+<div layout="column"
+     layout-padding>
+    <md-content>
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Clustering Parameters</h2>
+                <span flex></span>
+                <md-button class="md-icon-button"
+                           ng-click="dialog.answer('cancel')">
+                    <md-icon md-svg-src="../../../../../../assets/images/cross2.svg"
+                             aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <form name="dialogForm" layout-padding>
+            <md-input-container>
+                <label>Entity Groups #</label>
+                <input required name="entityTypes" ng-model="dialog.entityTypes">
+            </md-input-container>
+            <md-input-container>
+                <label>Entities Per Group</label>
+                <input required name="entitiesPerType" ng-model="dialog.entitiesPerType">
+            </md-input-container>
+            <md-input-container>
+                <label>Clustering Radius (px)</label>
+                <input required name="clusteringRadius" ng-model="dialog.clusteringRadius">
+            </md-input-container>
+            <div class="md-actions" layout="row">
+                <span flex></span>
+
+                <md-button md-no-ink class="green-button" ng-click="dialogForm.$valid && dialog.answer('ok')">APPLY
+                </md-button>
+            </div>
+        </form>
+
+
+    </md-content>
+</div>

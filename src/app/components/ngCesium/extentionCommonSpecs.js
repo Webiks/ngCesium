@@ -30,7 +30,7 @@ function ngCesiumExtensionTest(options){
         // get the directive name to inject to the DOM
         directiveName = directiveName.join('-');
         // compile the element with cesium and the extension
-        options.element = options.$compile('<div cesium-directive="cesiumConfig" ' + directiveName + '></div>')(options.$rootScope);
+        options.element = options.$compile('<div cesium="cesiumConfig" ' + directiveName + '></div>')(options.$rootScope);
         options.isoScope = options.element.scope().$$childHead; // get the cesium scope
         // get the created extension instnace
         options.extensionInstance = options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance[instanceName];

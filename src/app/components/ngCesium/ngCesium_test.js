@@ -22,7 +22,7 @@ describe('ngCesium module', function() {
                 geocoder: false
             };
 
-            element = $compile(angular.element('<div cesium-directive="cesiumConfig"></div>'))($rootScope);
+            element = $compile(angular.element('<div cesium="cesiumConfig"></div>'))($rootScope);
         }));
 
         afterEach(function() {

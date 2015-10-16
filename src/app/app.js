@@ -2,11 +2,14 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
+    // views
     'ui.router',
     'myApp.view1',
     'myApp.view2',
     'myApp.filterByPolygon',
     'myApp.clusteringView',
+
+    // modules
     'ngCesium',
     'ngCesiumPolygonDrawer',
     'ngMaterial'

@@ -3,14 +3,14 @@
 // define the ngCesium module
 angular.module('ngCesium', [])
     //define the cesium directive
-    .directive('cesiumDirective', ['$timeout', 'cesiumFactory', function ($timeout, cesiumFactory) {
+    .directive('cesium', ['$timeout', 'cesiumFactory', function ($timeout, cesiumFactory) {
         // return the directive definition object
         return {
             priority: 500,
             restrict: "EA",
             controllerAs: "cesiumCtrl",
             scope: {
-                cesiumDirective: "="
+                cesiumDirective: "=cesium"
             },
             bindToController: true,
             controller: function ($scope, $element) {

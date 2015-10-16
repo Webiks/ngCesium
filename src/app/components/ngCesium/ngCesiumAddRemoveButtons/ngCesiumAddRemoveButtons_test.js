@@ -13,7 +13,7 @@ xdescribe('ngCesium Add Remove Buttons module tests', function() {
     describe('ngCesiumAddRemoveButtons directive', function() {
         var element;
         beforeEach(inject(function() {
-            element = $compile('<div cesium-directive="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
+            element = $compile('<div cesium="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
             var buttonsWrapper = element.find('.cesiumButton');
             var addButton = element.find('.ngCesiumAddButton');
             var addButton = element.find('.ngCesiumRemoveButton');

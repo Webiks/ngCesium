@@ -9,7 +9,7 @@ angular.module('ngCesiumHelloWorldExtension', ['ngCesium'])
     .directive('cesiumHelloWorldExtension', function(cesiumHelloWorldExtensionFactory){
         return {
             restrict: 'A',
-            require: 'cesiumDirective',
+            require: 'cesium',
             link: function(scope, element, attr, ctrl){
                 // create the extension's instance and add it to our cesium instance controller for reference
                 ctrl.cesiumHelloWorldExtension = new cesiumHelloWorldExtensionFactory(ctrl.cesiumDirective.cesiumInstance);
