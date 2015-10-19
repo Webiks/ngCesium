@@ -12,6 +12,7 @@ angular.module('myApp', [
     // modules
     'ngCesium',
     'ngCesiumPolygonDrawer',
+    'ngCesiumClustering',
     'ngMaterial'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {

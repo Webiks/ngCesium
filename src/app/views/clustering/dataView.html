@@ -5,31 +5,32 @@
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2>Clustering Parameters</h2>
-                <span flex></span>
-                <md-button class="md-icon-button"
-                           ng-click="dialog.answer('cancel')">
-                    <md-icon md-svg-src="../../../../../../assets/images/cross2.svg"
-                             aria-label="Close dialog"></md-icon>
-                </md-button>
             </div>
         </md-toolbar>
-        <form name="dialogForm" layout-padding>
+        <form name="clusteringForm"
+              layout-padding>
             <md-input-container>
                 <label>Entity Groups #</label>
-                <input required name="entityTypes" ng-model="dialog.entityTypes">
+                <input required name="entityTypes"
+                       ng-model="viewCtrl.nGroups">
             </md-input-container>
             <md-input-container>
                 <label>Entities Per Group</label>
-                <input required name="entitiesPerType" ng-model="dialog.entitiesPerType">
+                <input required name="entitiesPerType"
+                       ng-model="viewCtrl.nEntitiesPerGroup">
             </md-input-container>
             <md-input-container>
                 <label>Clustering Radius (px)</label>
-                <input required name="clusteringRadius" ng-model="dialog.clusteringRadius">
+                <input required name="clusteringRadius"
+                       ng-model="viewCtrl.clusteringRadius">
             </md-input-container>
-            <div class="md-actions" layout="row">
+            <div class="md-actions"
+                 layout="row">
                 <span flex></span>
 
-                <md-button md-no-ink class="green-button" ng-click="dialogForm.$valid && dialog.answer('ok')">APPLY
+                <md-button md-no-ink class="green-button"
+                           ng-click="clusteringForm.$valid && viewCtrl.submit()">
+                    Start demo
                 </md-button>
             </div>
         </form>

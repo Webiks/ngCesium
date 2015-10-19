@@ -1,0 +1,18 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+ <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
+ <title>Map_Cluster</title>
+ <desc>Created with Sketch.</desc>
+ <g>
+  <title>Layer 1</title>
+  <g id="Page-1" fill="none" fill-rule="evenodd">
+   <g id="Map_Cluster">
+    <g id="Oval-1-+-123-Copy">
+     <circle id="Oval-1" stroke-opacity="0.5" stroke="red" stroke-width="15" fill="red" cx="32" cy="32" r="24"/>
+     <text id="13" font-family="Lucida Grande" font-size="28" font-weight="normal" fill="#FFFFFF"  y="41" x="31.64" text-anchor="middle" >
+  ***
+     </text>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>
