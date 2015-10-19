@@ -87,7 +87,6 @@ describe('ngCesium Clustering module tests', function () {
 
     ngCesiumExtensionTest(options);
 
-
     describe('ngCesiumClustering directive tests', function () {
 
     });
@@ -160,7 +159,15 @@ describe('ngCesium Clustering module tests', function () {
             describe('cluster() tests', function () {
                 it('cluster should call clusterGroup for all existing groups', function () {
                     options.extensionInstance.groups = [1, 2];
-                    spyOn(options.extensionInstance, 'clusterGroup');
+                    spyOn(options.extensionInstance, 'clusterGroup').and.callFake(function(){
+                        return true;
+                    });
+                    spyOn(options.extensionInstance, 'removeAllEntities').and.callFake(function(){
+                        return true;
+                    });
+                    spyOn(options.extensionInstance, 'resetVisibility').and.callFake(function(){
+                        return true;
+                    });
                     options.extensionInstance.cluster();
                     expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(1);
                     expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(2);
@@ -211,7 +218,6 @@ describe('ngCesium Clustering module tests', function () {
                     expect(options.extensionInstance.addToCluster.calls.count()).toEqual(10);
                     expect(options.extensionInstance.createCluster.calls.count()).toEqual(9);
                 })
-
             });
 
             describe('addToCluster(clusterArr, entity) tests', function () {
