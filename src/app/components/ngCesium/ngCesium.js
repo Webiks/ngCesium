@@ -103,9 +103,20 @@ angular.module('ngCesium', [])
 
                 return this.pinBuilder.fromColor(options.color, options.size).toDataURL();
             },
-            setCallbackProperty: function setCallbackProperty(property) {
+            setCallbackProperty: function setCallbackProperty(value, property) {
+
                 return new Cesium.CallbackProperty(function () {
-                    return property;
+                    // handle a function
+                    if (angular.isFunction(value)){
+                        return value(property);
+                    }
+
+                    // handle reference binding
+                    if (angular.isDefined(property)){
+                        return value[property];
+                    }
+
+                    return value;
                 }, false);
             },
 
@@ -246,6 +257,52 @@ angular.module('ngCesium', [])
 
 .service('cesiumService', [function(){
         return {
+            getSVG: function getSVGString(myURL){
+                if (angular.isUndefined(this.svgCache[myURL])){
+                    var XMLrequest = new XMLHttpRequest(); // new XML request
+                    XMLrequest.open("GET", myURL, false); // URL of the SVG file on server
+                    XMLrequest.send(null); // get the SVG file
 
+                    this.svgCache[myURL] =  XMLrequest.responseXML.getElementsByTagName("svg")[0];
+                }
+
+                return this.svgCache[myURL];
+            },
+            replaceTextInSVG: function replaceTextInSVG(svg, text, placeHolder){
+
+                if (!angular.isArray(text)){
+                    text = [text];
+                }
+
+                if (angular.isUndefined(placeHolder)){
+                    placeHolder = ['***'];
+                }
+
+                var cLength = Math.min(text.length, placeHolder.length);
+
+                // get the SVG as text
+                var tmpSvg = svg;
+                if (!angular.isString(tmpSvg)){
+                    var tmpDiv = document.createElement("div");
+                    tmpDiv.appendChild(tmpSvg);
+                    tmpSvg = tmpDiv.innerHTML;
+                }
+
+                for (var i = 0; i < cLength; i++){
+                    tmpSvg = tmpSvg.replace(text[i], placeHolder[i]);
+                }
+                return tmpSvg;
+            },
+            svgToImage: function svgToImage(svg){
+                // tested only on chrome...
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+
+                    var b64 = "data:image/svg+xml;base64,";
+                    b64 += btoa(svg);
+
+                    return b64;
+            },
+            svgCache: {}
         }
     }]);
