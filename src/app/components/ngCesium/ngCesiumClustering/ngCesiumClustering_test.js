@@ -366,15 +366,6 @@ describe('ngCesium Clustering module tests', function () {
             });
         });
 
-
-
-
-
-
-
-
-
-
         it('setConfig(config) should alter the config', function () {
             var config = {
                 propertyInScope: 'cesiumConfig.clusterConfig',
