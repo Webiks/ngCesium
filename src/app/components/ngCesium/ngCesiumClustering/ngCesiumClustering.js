@@ -56,8 +56,13 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                  * @name cluster
                  * @description iterates over the groups and runs the cluster function for each group
                  */
-                removeAllEntities: function removeAllEntities(group){
+                removeAllEntitiesFromGroup: function removeAllEntitiesFromGroup(group){
                     group.dataSource.entities.removeAll();
+                },
+                clearClusters: function clearClusters(group){
+                    var that = this;
+                    that.removeAllEntitiesFromGroup(group);
+                    group.clusters.length = 0;
                 },
                 resetVisibility: function resetVisibility(group){
                     for (var j = 0; j < group.members.length; j++){
@@ -69,7 +74,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                     var j;
                     for (var i = 0; i < that.groups.length; i++) {
                         // clear group dataSource
-                        that.removeAllEntities(that.groups[i]);
+                        that.clearClusters(that.groups[i]);
 
                         that.resetVisibility(that.groups[i]);
 
@@ -311,7 +316,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                         currVal = $rootScope.$eval(propertyName, entity);
 
                         // make sure we have the property's value
-                        if (angular.isDefined(currVal.getValue)){
+                        if (angular.isDefined(currVal) && angular.isDefined(currVal.getValue)){
                             currVal = currVal.getValue();
                         }
 
@@ -396,19 +401,30 @@ angular.module('ngCesiumClustering', ['ngCesium'])
         }
     })
 
+/**
+ *
+ *
+ * @param cesiumClusteringConstants
+ * @returns {cesiumClusteringGroup}
+ */
     .factory('cesiumClusteringGroup', ['cesiumClusteringConstants',
         function (cesiumClusteringConstants) {
-            // constructor
+            /**
+             * @name cesiumClusteringGroup
+             * @description constructor for the groups object. dsCollection is the data source to create the group's clusters in
+             * @param group
+             * @param config
+             * @param dsCollection
+             * @returns {cesiumClusteringGroup}
+             */
             function cesiumClusteringGroup(group, config, dsCollection) {
                 // TODO::validate group config
                 var that = this;
                 that.color = group.color ? group.color : cesiumClusteringConstants.groupsColors.pickColor(); // group color
                 that.name = group.name; // group name
                 that.id = Math.random().toString(36).substring(7); //unique id...
-                that.dataSource = dsCollection.add(new Cesium.CustomDataSource(that.id));
-                that.dataSource.then(function(ds){
-                    that.dataSource = ds;
-                });
+                that.dataSource = new Cesium.CustomDataSource(that.id);
+                dsCollection.add(that.dataSource);
                  // group dataSource
                 that.members = []; // entities array
                 that.clusters = []; // clusters array
@@ -422,3 +438,4 @@ angular.module('ngCesiumClustering', ['ngCesium'])
 
             return cesiumClusteringGroup;
         }]);
+

@@ -51,6 +51,8 @@ angular.module('myApp.clusteringView', ['ui.router'])
         };
 
         var demoRadius = 500000;
+        var assetsPath = $('script[src*=clusteringView]').attr('src').replace(/clusteringView\.js.*$/, 'assets');
+
         // model
         vm.nGroups = 3;
         vm.nEntitiesPerGroup = 300;
@@ -58,9 +60,8 @@ angular.module('myApp.clusteringView', ['ui.router'])
         vm.submit = function submit() {
             var nGroups = vm.nGroups;
             var nEntitiesPerGroup = vm.nEntitiesPerGroup;
+            vm.cesiumConfig.cesiumInstance._viewer.entities.removeAll();
             var groups = [];
-            var assetsPath = $('script[src*=clusteringView]').attr('src').replace(/clusteringView\.js.*$/, 'assets');
-
 
             for (var i = 0; i < nGroups; i++) {
                 groups.push({});

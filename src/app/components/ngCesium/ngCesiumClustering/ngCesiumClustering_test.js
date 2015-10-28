@@ -162,7 +162,7 @@ describe('ngCesium Clustering module tests', function () {
                     spyOn(options.extensionInstance, 'clusterGroup').and.callFake(function(){
                         return true;
                     });
-                    spyOn(options.extensionInstance, 'removeAllEntities').and.callFake(function(){
+                    spyOn(options.extensionInstance, 'clearClusters').and.callFake(function(){
                         return true;
                     });
                     spyOn(options.extensionInstance, 'resetVisibility').and.callFake(function(){
@@ -172,6 +172,19 @@ describe('ngCesium Clustering module tests', function () {
                     expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(1);
                     expect(options.extensionInstance.clusterGroup).toHaveBeenCalledWith(2);
                 });
+
+            });
+
+            describe('clearClusters() tests', function(){
+                // should call remove all entities
+
+                // should clear the clusters
+            });
+
+            describe('removeAllEntitiesFromGroup() tests', function(){
+                // should call remove all entities
+
+                // should clear the clusters
             });
 
             describe('clusterGroup(group) tests', function () {
@@ -350,6 +363,7 @@ describe('ngCesium Clustering module tests', function () {
                 });
 
                 it('Should return -1 when there are no groups', function () {
+                    options.extensionInstance.groups.length = 0;
                     expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(-1);
                 });
 
@@ -487,7 +501,7 @@ describe('ngCesium Clustering module tests', function () {
         var result;
         beforeEach(inject(function (_cesiumClusteringGroup_) {
             cesiumClusteringGroup = _cesiumClusteringGroup_;
-            result = new cesiumClusteringGroup(config.groups[0], config);
+            result = new cesiumClusteringGroup(config.groups[0], config, {add: function(){return  {id: Math.random()}}});
         }));
 
         describe('should create a group instance', function () {
@@ -514,7 +528,7 @@ describe('ngCesium Clustering module tests', function () {
 
             it('should set the radius according to group radius', function () {
                 config.groups[0].radius = 50;
-                result = new cesiumClusteringGroup(config.groups[0], config);
+                result = new cesiumClusteringGroup(config.groups[0], config, {add: function(){return  {id: Math.random()}}});
                 expect(result.radius).toEqual(50);
             });
 
