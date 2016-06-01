@@ -7,7 +7,7 @@ angular.module('ngCesium', [])
         // return the directive definition object
         return {
             priority: 500,
-            restrict: "EA",
+            restrict: "A",
             controllerAs: "cesiumCtrl",
             scope: {
                 cesiumDirective: "=cesium"
