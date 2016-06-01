@@ -8,6 +8,7 @@ angular.module('myApp', [
     'myApp.view2',
     'myApp.filterByPolygon',
     'myApp.clusteringView',
+    'myApp.view3',
 
     // modules
     'ngCesium',
