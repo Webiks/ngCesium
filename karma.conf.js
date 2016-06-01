@@ -1,3 +1,4 @@
+// TODO::make sure you load everything before karma starts the tests (e.g. jQuery, Cesium etc.)
 module.exports = function (config) {
     config.set({
 
@@ -5,6 +6,7 @@ module.exports = function (config) {
 
         files: [
             'src/bower_components/jquery/dist/jquery.min.js',
+            'src/bower_components/cesium/Cesium/Cesium.js',
             'src/bower_components/angular/angular.js',
             'src/bower_components/angular-ui-router/release/angular-ui-router.min.js',
             'src/bower_components/angular-mocks/angular-mocks.js',
