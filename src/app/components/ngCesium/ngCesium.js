@@ -37,6 +37,10 @@ angular.module('ngCesium', [])
             },
             // define the "link" function
             link: function (scope, element, attr, ctrl) {
+                element.on('$destroy',function(){
+                    // get rid of event handlers and concurrent processes
+                    ctrl.cesium.destroy();
+                });
             }
         };
     }])
